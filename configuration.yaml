@@ -1,0 +1,129 @@
+# Loads default set of integrations. Do not remove.
+default_config:
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
+template:
+  - trigger:
+      - platform: time_pattern
+        hours: /1
+      - platform: homeassistant
+        event: start
+    action:
+      - service: weather.get_forecasts
+        data:
+          type: daily
+        target:
+          entity_id: weather.forecast_home
+        response_variable: daily_data
+      - service: weather.get_forecasts
+        data:
+          type: hourly
+        target:
+          entity_id: weather.forecast_home
+        response_variable: hourly_data        
+    sensor:
+      - name: "Weather forecast"
+        unique_id: weather_forecast
+        state: "{{ daily_data['weather.forecast_home'].forecast[0] }}"
+        attributes:
+          daily_forecast: "{{ daily_data['weather.forecast_home'].forecast }}"
+          hourly_forecast: "{{ hourly_data['weather.forecast_home'].forecast }}"
+          
+        availability: "{{ states('weather.forecast_home') not in ['unknown', 'unavailable', 'none'] }}"
+  - sensor:
+      - name: "Daily weather forecast sensor"
+        unique_id: daily_weather_forecast_sensor
+        state: "{{ state_attr('sensor.weather_forecast','daily_forecast')[0] }}"
+        attributes:  
+          condition0: "{{ state_attr('sensor.weather_forecast','daily_forecast')[0].condition }}"
+          day0: "{{ as_timestamp(state_attr('sensor.weather_forecast','daily_forecast')[0].datetime) | timestamp_custom('%a', True) }}"
+          temperature0: "{{ state_attr('sensor.weather_forecast','daily_forecast')[0].temperature | float }}"
+          templow0: "{{ state_attr('sensor.weather_forecast','daily_forecast')[0].templow | float }}"
+          condition1: "{{ state_attr('sensor.weather_forecast','daily_forecast')[1].condition }}"
+          day1: "{{ as_timestamp(state_attr('sensor.weather_forecast','daily_forecast')[1].datetime) | timestamp_custom('%a', True) }}"          
+          temperature1: "{{ state_attr('sensor.weather_forecast','daily_forecast')[1].temperature | float }}"
+          templow1: "{{ state_attr('sensor.weather_forecast','daily_forecast')[1].templow | float }}"
+          condition2: "{{ state_attr('sensor.weather_forecast','daily_forecast')[2].condition }}"
+          day2: "{{ as_timestamp(state_attr('sensor.weather_forecast','daily_forecast')[2].datetime) | timestamp_custom('%a', True) }}"          
+          temperature2: "{{ state_attr('sensor.weather_forecast','daily_forecast')[2].temperature | float }}"
+          templow2: "{{ state_attr('sensor.weather_forecast','daily_forecast')[2].templow | float }}"
+          condition3: "{{ state_attr('sensor.weather_forecast','daily_forecast')[3].condition }}"
+          day3: "{{ as_timestamp(state_attr('sensor.weather_forecast','daily_forecast')[3].datetime) | timestamp_custom('%a', True) }}"          
+          temperature3: "{{ state_attr('sensor.weather_forecast','daily_forecast')[3].temperature | float }}"
+          templow3: "{{ state_attr('sensor.weather_forecast','daily_forecast')[3].templow | float }}"          
+          condition4: "{{ state_attr('sensor.weather_forecast','daily_forecast')[4].condition }}"
+          day4: "{{ as_timestamp(state_attr('sensor.weather_forecast','daily_forecast')[4].datetime) | timestamp_custom('%a', True) }}"          
+          temperature4: "{{ state_attr('sensor.weather_forecast','daily_forecast')[4].temperature | float }}"
+          templow4: "{{ state_attr('sensor.weather_forecast','daily_forecast')[4].templow | float }}"     
+  - sensor:
+      - name: "Hourly weather forecast sensor"
+        unique_id: hourly_weather_forecast_sensor
+        state: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[0] }}"
+        attributes:
+          # Heure_0
+          condition0: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[0].condition | default(0) }}"
+          time0: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[0].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature0: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[0].temperature | float(0) }}"
+          precipitation0: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[0].precipitation | float(0) }}"
+          # time_1
+          condition1: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[1].condition | default(0) }}"
+          time1: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[1].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature1: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[1].temperature | float(0) }}"
+          precipitation1: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[1].precipitation | float(0) }}"
+          # time_2
+          condition2: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[2].condition | default(0) }}"
+          time2: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[2].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature2: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[2].temperature | float(0) }}"
+          precipitation2: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[2].precipitation | float(0) }}"
+          # time_3
+          condition3: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[3].condition | default(0) }}"
+          time3: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[3].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature3: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[3].temperature | float(0) }}"
+          precipitation3: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[3].precipitation | float(0) }}"
+          # time_4
+          condition4: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[4].condition | default(0) }}"
+          time4: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[4].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature4: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[4].temperature | float(0) }}"
+          precipitation4: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[4].precipitation | float(0) }}"
+          # time_5
+          condition5: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[5].condition | default(0) }}"
+          time5: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[5].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature5: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[5].temperature | float(0) }}"
+          precipitation5: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[5].precipitation | float(0) }}"
+          # time_6
+          condition6: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[6].condition | default(0) }}"
+          time6: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[6].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature6: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[6].temperature | float(0) }}"
+          precipitation6: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[6].precipitation | float(0) }}"
+          # time_7
+          condition7: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[7].condition | default(0) }}"
+          time7: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[7].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature7: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[7].temperature | float(0) }}"
+          precipitation7: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[7].precipitation | float(0) }}"
+          # time_8
+          condition8: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[8].condition | default(0) }}"
+          time8: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[8].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature8: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[8].temperature | float(0) }}"
+          precipitation8: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[8].precipitation | float(0) }}"
+          # time_9
+          condition9: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[9].condition | default(0) }}"
+          time9: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[9].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature9: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[9].temperature | float(0) }}"
+          precipitation9: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[9].precipitation | float(0) }}"
+          # time_10
+          condition10: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[10].condition | default(0) }}"
+          time10: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[10].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature10: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[10].temperature | float(0) }}"
+          precipitation10: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[10].precipitation | float(0) }}"
+          # time_11
+          condition11: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[11].condition | default(0) }}"
+          time11: "{{ as_timestamp(state_attr('sensor.weather_forecast','hourly_forecast')[11].datetime) | int(0) | timestamp_custom('%H:%M', true) }}"
+          temperature11: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[11].temperature | float(0) }}"
+          precipitation11: "{{ state_attr('sensor.weather_forecast','hourly_forecast')[11].precipitation | float(0) }}"          
