@@ -751,13 +751,13 @@ display:
 
       // BATTERY VOLTAGE
       if (id(battery_voltage).state >= 3.8) {
-        it.printf(730, 450, id(icon_font_20), "\U000F12A3"); // battery full
+        it.printf(730, 450, id(icon_font_20), id(black), "\U000F12A3"); // battery full
       } else if (id(battery_voltage).state >= 3.6) {
-        it.printf(730, 450, id(icon_font_20), "\U000F12A2"); // battery medium
+        it.printf(730, 450, id(icon_font_20), id(black), "\U000F12A2"); // battery medium
       } else {
-        it.printf(730, 450, id(icon_font_20), "\U000F12A1"); // battery low
+        it.printf(730, 450, id(icon_font_20), id(black), "\U000F12A1"); // battery low
       }
-      it.printf(750, 452, id(myFont14), "%.1fV", id(battery_voltage).state);
+      it.printf(750, 452, id(myFont14), id(black), "%.1fV", id(battery_voltage).state);
    
 
 # Deep sleep configuration to save power
